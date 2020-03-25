@@ -4,6 +4,7 @@ Created with FastAPI and PostgreSQL database.
 
 ## Installation
 Clone repo.
+
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install all dependencies from requirements file.
 
 ```bash
