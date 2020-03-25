@@ -1,4 +1,3 @@
-# simple-workout-tracker-api
 # Simple workout tracker API
 API for workout tracker application.
 Created with FastAPI and PostgreSQL database.
