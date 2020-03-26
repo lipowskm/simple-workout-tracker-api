@@ -1,4 +1,10 @@
+import os
+
+from dotenv import load_dotenv
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 
 class CustomBase(object):
