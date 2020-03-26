@@ -12,16 +12,16 @@ pip install -r requirements.txt
 ```
 
 ## Run server
-Either run main.py, or run the following command:
+Either run main.py, or run the following command from root directory:
 
 ```bash
-uvicorn main:app
+uvicorn app.main:app
 ```
 
 To make the server reload after making changes, add the parameter:
 
 ```bash
-uvicorn main:app --reload
+uvicorn app.main:app --reload
 ```
 
 ## Database migration
