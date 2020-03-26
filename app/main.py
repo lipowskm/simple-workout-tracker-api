@@ -16,5 +16,4 @@ app.include_router(api_router, prefix="/api")
 
 
 if __name__ == "__main__":
-    print(os.getenv("SERVER_HOST"))
     uvicorn.run(app, host=os.getenv("SERVER_HOST"), port=int(os.getenv("SERVER_PORT")))
