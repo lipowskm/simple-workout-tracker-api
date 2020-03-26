@@ -54,7 +54,7 @@ http(s)://SERVER_HOST:SERVER:PORT/docs
 ```
 
 ## Database migration
-After any changes or additions in database structure, new [alembic](https://pypi.org/project/alembic/) revision has to be created using the following command:
+After any changes or additions in database models, new [alembic](https://pypi.org/project/alembic/) revision has to be created using the following command:
 
 ```bash
 alembic revision --autogenerate -m "example message"
