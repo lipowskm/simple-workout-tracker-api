@@ -23,3 +23,16 @@ To make the server reload after making changes, add the parameter:
 ```bash
 uvicorn main:app --reload
 ```
+
+## Database migration
+After any changes or additions in database structure, new [alembic](https://pypi.org/project/alembic/) revision has to be created using the following command:
+
+```bash
+alembic revision --autogenerate -m "example message"
+```
+
+And then to upgrade the database to the newest revision:
+
+```bash
+alembic upgrade head"
+```
