@@ -34,5 +34,5 @@ alembic revision --autogenerate -m "example message"
 And then to upgrade the database to the newest revision:
 
 ```bash
-alembic upgrade head"
+alembic upgrade head
 ```
