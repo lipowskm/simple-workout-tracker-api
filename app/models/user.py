@@ -1,13 +1,12 @@
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String
-
-Base = declarative_base()
+from app.database.base import Base
+from sqlalchemy import Column, Integer, String, Boolean
 
 
 class User(Base):
-    __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
-    first_name = Column(String)
-    last_name = Column(String)
-    age = Column(Integer)
-    email = Column(String)
+    email = Column(String, unique=True, index=True)
+    first_name = Column(String, index=True)
+    last_name = Column(String, index=True)
+    hashed_password = Column(String)
+    is_active = Column(Boolean(), default=True)
+    is_superuser = Column(Boolean(), default=False)
