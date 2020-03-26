@@ -30,7 +30,7 @@ postgres://username:password:@server_address/database_name
 Include this only if running server by executing main.py:
 
 * `SERVER_HOST`: Server address. Use `0.0.0.0` to make application available on local network.
-* `SERVER_PORT`: Server port number, e.g., `8000`
+* `SERVER_PORT`: Server port number, e.g. `8000`
 
 ## Run server
 Either run main.py, or run the following command from root directory:
