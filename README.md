@@ -11,6 +11,27 @@ Use the package manager [pip](https://pip.pypa.io/en/stable/) to install all dep
 pip install -r requirements.txt
 ```
 
+## Environmental variables
+Before running the server, `.env` file with input variables needs to be created in project root directory, like so:
+
+```text
+VAR1_NAME=VAR1_VALUE
+VAR2_NAME=VAR2_VALUE
+...
+```
+
+Variables list:
+
+* `DATABASE_URL`: URL of PostgreSQL database. Syntax:
+```text
+`postgres://username:password:@server_address/database_name
+```
+
+Include this only if running server by executing main.py:
+
+* `SERVER_HOST`: Server address. Use `0.0.0.0` to make application available on local network.
+* `SERVER_PORT`: Server port number.
+
 ## Run server
 Either run main.py, or run the following command from root directory:
 
