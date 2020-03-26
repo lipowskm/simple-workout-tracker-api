@@ -45,6 +45,14 @@ To make the server reload after making changes, add the parameter:
 uvicorn app.main:app --reload
 ```
 
+## API documentation
+
+After running the server, API documentation is available under:
+
+```
+http://SERVER_HOST:SERVER:PORT/docs
+```
+
 ## Database migration
 After any changes or additions in database structure, new [alembic](https://pypi.org/project/alembic/) revision has to be created using the following command:
 
