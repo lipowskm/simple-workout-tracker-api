@@ -50,7 +50,7 @@ uvicorn app.main:app --reload
 After running the server, API documentation is available under:
 
 ```
-http://SERVER_HOST:SERVER:PORT/docs
+http(s)://SERVER_HOST:SERVER:PORT/docs
 ```
 
 ## Database migration
