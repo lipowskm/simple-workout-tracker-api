@@ -24,7 +24,7 @@ Variables list:
 
 * `DATABASE_URL`: URL of PostgreSQL database. Syntax:
 ```text
-`postgres://username:password:@server_address/database_name
+postgres://username:password:@server_address/database_name
 ```
 
 Include this only if running server by executing main.py:
