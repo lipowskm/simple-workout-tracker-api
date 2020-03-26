@@ -1,18 +1,12 @@
+import os
+import sys
+sys.path.insert(0, os.path.realpath(os.path.join(os.path.dirname(__file__), '..')))  # noqa
 from logging.config import fileConfig
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from alembic import context
-import os
-import sys
+from app.database.base_imports import Base
 
-
-from dotenv import load_dotenv
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-load_dotenv(os.path.join(BASE_DIR, ".env"))
-sys.path.append(BASE_DIR)
-sys.path.insert(0, os.path.realpath(os.path.join(os.path.dirname(__file__), '..')))
-print(os.getenv("DATABASE_URL"))
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -25,7 +19,6 @@ fileConfig(config.config_file_name)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from app.database.base import Base  # noqa
 target_metadata = Base.metadata
 
 
@@ -33,6 +26,7 @@ target_metadata = Base.metadata
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
+from app.core import config as app_config  # noqa
 
 
 def run_migrations_offline():
@@ -47,7 +41,7 @@ def run_migrations_offline():
     script output.
 
     """
-    url = os.getenv("DATABASE_URL")
+    url = app_config.DATABASE_URL
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -67,7 +61,7 @@ def run_migrations_online():
 
     """
     config_section = config.get_section(config.config_ini_section)
-    url = os.getenv("DATABASE_URL")
+    url = app_config.DATABASE_URL
     config_section["sqlalchemy.url"] = url
     connectable = engine_from_config(
         config_section,
