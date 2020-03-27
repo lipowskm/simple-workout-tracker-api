@@ -28,7 +28,7 @@ def login_access_token(
         db, username=form_data.username, password=form_data.password
     )
     if not user:
-        raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="Incorrect email or password")
+        raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="Incorrect login or password")
     elif not crud.user.is_active(user):
         raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Inactive user")
     access_token_expires = timedelta(minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
