@@ -42,12 +42,6 @@ def create_user(
             status_code=HTTP_409_CONFLICT,
             detail="The user with this email already exists in the system.",
         )
-    user = crud.user.get_by_username(db, username=user_in.username)
-    if user:
-        raise HTTPException(
-            status_code=HTTP_409_CONFLICT,
-            detail="Username already taken.",
-        )
     user = crud.user.create(db, obj_in=user_in)
     return user
 
