@@ -42,6 +42,6 @@ def get_current_active_user(current_user: User = Security(get_current_user)):
 def get_current_active_superuser(current_user: User = Security(get_current_user)):
     if not crud.user.is_superuser(current_user):
         raise HTTPException(
-            status_code=403, detail="The user doesn't have enough privileges"
+            status_code=HTTP_403_FORBIDDEN, detail="The user doesn't have enough privileges"
         )
     return current_user

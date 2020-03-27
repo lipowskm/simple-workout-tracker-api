@@ -33,7 +33,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db_session.add(db_obj)
         db_session.commit()
         db_session.refresh(db_obj)
-        return
+        return db_obj
 
     @staticmethod
     def update(db_session: Session, *, db_obj: ModelType, obj_in: UpdateSchemaType) -> ModelType:

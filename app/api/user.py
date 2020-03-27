@@ -1,13 +1,12 @@
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import EmailStr
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_404_NOT_FOUND, HTTP_409_CONFLICT
 
 from app import crud
 from app.api.utils.db import get_db
-from app.api.utils.security import get_current_active_user
+from app.api.utils.security import get_current_active_user, get_current_active_superuser
 from app.models.user import User as DBUser
 from app.schemas.user import User, UserCreate, UserUpdate
 
@@ -16,6 +15,7 @@ router = APIRouter()
 
 @router.get("/", response_model=List[User])
 def read_users(
+        current_user: DBUser = Depends(get_current_active_superuser),
         db: Session = Depends(get_db),
         skip: int = 0,
         limit: int = 100,
@@ -29,9 +29,9 @@ def read_users(
 
 @router.post("/", response_model=User)
 def create_user(
-        *,
+        user_in: UserCreate,
+        current_user: DBUser = Depends(get_current_active_superuser),
         db: Session = Depends(get_db),
-        user_in: UserCreate
 ):
     """
     Create new user.
@@ -57,6 +57,7 @@ def read_user_me(current_user: DBUser = Depends(get_current_active_user)):
 @router.get("/{user_id}", response_model=User)
 def read_user_by_id(
         user_id: int,
+        current_user: DBUser = Depends(get_current_active_superuser),
         db: Session = Depends(get_db)
 ):
     """
@@ -73,10 +74,10 @@ def read_user_by_id(
 
 @router.put("/{user_id}", response_model=User)
 def update_user(
-        *,
-        db: Session = Depends(get_db),
         user_id: int,
-        user_in: UserUpdate
+        user_in: UserUpdate,
+        current_user: DBUser = Depends(get_current_active_superuser),
+        db: Session = Depends(get_db),
 ):
     """
     Update a user.
@@ -94,6 +95,7 @@ def update_user(
 @router.delete("/{user_id}", response_model=User)
 def remove_user_by_id(
         user_id: int,
+        current_user: DBUser = Depends(get_current_active_superuser),
         db: Session = Depends(get_db)
 ):
     """
