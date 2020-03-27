@@ -7,6 +7,7 @@ class UserBase(BaseModel):
     email: Optional[EmailStr]
     first_name: Optional[str]
     last_name: Optional[str]
+    username: Optional[str]
     is_active: Optional[bool] = True
     is_superuser: Optional[bool] = False
 
@@ -21,6 +22,7 @@ class UserBaseInDB(UserBase):
 # Properties to receive via API on creation
 class UserCreate(UserBaseInDB):
     email: EmailStr
+    username: str
     password: str
 
 
