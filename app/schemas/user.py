@@ -26,12 +26,6 @@ class UserCreate(UserBaseInDB):
     password: str
 
 
-# Properties to receive via API on superuser creation
-class SuperUserCreate(UserBaseInDB):
-    username: str
-    password: str
-
-
 # Properties to receive via API on update
 class UserUpdate(UserBaseInDB):
     password: Optional[str] = None
