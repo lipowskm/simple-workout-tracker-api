@@ -24,7 +24,7 @@ Variables list:
 
 * `DATABASE_URL`: URL of PostgreSQL database. Syntax:
 ```text
-postgres://username:password:@server_address/database_name
+postgresql://username:password:@server_address/database_name
 ```
 * `SECRET_KEY`: 256-bit unique hex key used for password encryption.
 * `SUPERUSER`: Superuser login.
