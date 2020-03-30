@@ -26,6 +26,9 @@ Variables list:
 ```text
 postgres://username:password:@server_address/database_name
 ```
+* `SECRET_KEY`: 256-bit unique hex key used for password encryption.
+* `SUPERUSER`: Superuser login.
+* `SUPERUSER_PASSWORD`: Superuser password.
 
 Include this only if running server by executing `main.py`:
 
