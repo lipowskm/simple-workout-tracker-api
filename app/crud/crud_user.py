@@ -33,7 +33,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
                                                      is_active=obj_in.is_active).returning(self.model.id)
         return await database.execute(query=query)
 
-    async def update(self, id: int, obj_in: UserUpdate) -> Record:
+    async def update(self, id: int, obj_in: UserUpdate) -> int:
         obj_in_data = jsonable_encoder(obj_in)
         if obj_in_data['password']:
             obj_in_data['hashed_password'] = get_password_hash(obj_in_data.pop('password'))
