@@ -15,9 +15,7 @@ from app.schemas.token import TokenPayload
 reusable_oauth2 = OAuth2PasswordBearer(tokenUrl="/api/login/access-token")
 
 
-def get_current_user(
-        db: Session = Depends(get_db), token: str = Security(reusable_oauth2)
-):
+async def get_current_user(token: str = Security(reusable_oauth2)):
     try:
         payload = jwt.decode(token, config.SECRET_KEY, algorithms=[ALGORITHM])
         token_data = TokenPayload(**payload)
@@ -27,20 +25,20 @@ def get_current_user(
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    user = crud.user.get(db, id=token_data.user_id)
+    user = await crud.user.get(id=token_data.user_id)
     if not user:
         raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="User not found")
-    return user
+    return User(**user)
 
 
 def get_current_active_user(current_user: User = Security(get_current_user)):
-    if not crud.user.is_active(current_user):
+    if not current_user.is_active:
         raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Inactive user")
     return current_user
 
 
 def get_current_active_superuser(current_user: User = Security(get_current_user)):
-    if not crud.user.is_superuser(current_user):
+    if not current_user.is_superuser:
         raise HTTPException(
             status_code=HTTP_403_FORBIDDEN, detail="The user doesn't have enough privileges"
         )

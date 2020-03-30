@@ -7,11 +7,22 @@ from fastapi import FastAPI
 from app import init_data
 from app.api.api import api_router
 from app.core import config
-from app.init_data import logger
+from app.database.session import database
 
-init_data.init()
+
 app = FastAPI(title='Simple Workout Tracker API')
 app.include_router(api_router, prefix="/api")
+
+
+@app.on_event("startup")
+async def startup():
+    await database.connect()
+    await init_data.init()
+
+
+@app.on_event("shutdown")
+async def shutdown():
+    await database.disconnect()
 
 
 @app.middleware("http")

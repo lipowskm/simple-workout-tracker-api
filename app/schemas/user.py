@@ -15,12 +15,9 @@ class UserBase(BaseModel):
 class UserBaseInDB(UserBase):
     id: int = None
 
-    class Config:
-        orm_mode = True
-
 
 # Properties to receive via API on creation
-class UserCreate(UserBaseInDB):
+class UserCreate(UserBase):
     email: EmailStr
     username: str
     password: str
@@ -33,7 +30,7 @@ class SuperUserCreate(UserBaseInDB):
 
 
 # Properties to receive via API on update
-class UserUpdate(UserBaseInDB):
+class UserUpdate(UserBase):
     password: Optional[str] = None
 
 
