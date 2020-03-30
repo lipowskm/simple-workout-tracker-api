@@ -1,12 +1,10 @@
 import jwt
-from fastapi import Depends, HTTPException, Security
+from fastapi import HTTPException, Security
 from fastapi.security import OAuth2PasswordBearer
 from jwt import PyJWTError
-from sqlalchemy.orm import Session
 from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND
 
 from app import crud
-from app.api.utils.db import get_db
 from app.core import config
 from app.core.token import ALGORITHM
 from app.models.user import User

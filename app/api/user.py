@@ -1,11 +1,9 @@
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from starlette.status import HTTP_404_NOT_FOUND, HTTP_409_CONFLICT, HTTP_403_FORBIDDEN
+from starlette.status import HTTP_404_NOT_FOUND, HTTP_409_CONFLICT
 
 from app import crud
-from app.api.utils.db import get_db
 from app.api.utils.security import get_current_active_user, get_current_active_superuser
 from app.models.user import User as DBUser
 from app.schemas.user import User, UserCreate, UserUpdate
@@ -89,8 +87,20 @@ async def update_user(
             status_code=HTTP_404_NOT_FOUND,
             detail="The user does not exist in the system",
         )
-    user = await crud.user.update(id=user_id, obj_in=user_in)
-    return user
+    other_user = await crud.user.get_by_email(email=user_in.email)
+    if other_user and (user != other_user):
+        raise HTTPException(
+            status_code=HTTP_409_CONFLICT,
+            detail="The user with this email already exists in the system.",
+        )
+    other_user = await crud.user.get_by_username(username=user_in.username)
+    if other_user and (user != other_user):
+        raise HTTPException(
+            status_code=HTTP_409_CONFLICT,
+            detail="Username already taken.",
+        )
+    user_id = await crud.user.update(id=user_id, obj_in=user_in)
+    return await crud.user.get(id=user_id)
 
 
 @router.delete("/{user_id}", response_model=User)

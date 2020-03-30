@@ -13,6 +13,7 @@ async def init_database():
         user_in = SuperUserCreate(
             username=config.SUPERUSER,
             password=config.SUPERUSER_PASSWORD,
+            email='admin@admin.com',
             is_superuser=True
         )
         await crud.user.create(obj_in=user_in)

@@ -9,7 +9,6 @@ from app.api.api import api_router
 from app.core import config
 from app.database.session import database
 
-
 app = FastAPI(title='Simple Workout Tracker API')
 app.include_router(api_router, prefix="/api")
 

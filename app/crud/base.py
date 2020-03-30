@@ -1,11 +1,8 @@
-from typing import List, Optional, Generic, TypeVar, Type
+from typing import List, Generic, TypeVar, Type
 
 from asyncpg import Record
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
-from sqlalchemy import Table
-from sqlalchemy.orm import Session
-from databases import Database
 
 from app.database.base import Base
 from app.database.session import database
