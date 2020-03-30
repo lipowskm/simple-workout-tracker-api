@@ -7,7 +7,7 @@ from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN, HTTP_404
 from app import crud
 from app.core import config
 from app.core.token import ALGORITHM
-from app.models.user import User
+from app.schemas.user import User
 from app.schemas.token import TokenPayload
 
 reusable_oauth2 = OAuth2PasswordBearer(tokenUrl="/api/login/access-token")

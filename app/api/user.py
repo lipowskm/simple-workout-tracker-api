@@ -52,7 +52,7 @@ async def read_user_me(current_user: DBUser = Depends(get_current_active_user)):
     """
     Get current user
     """
-    return await crud.user.get(id=current_user.id)
+    return current_user
 
 
 @router.get("/{user_id}", response_model=User)
