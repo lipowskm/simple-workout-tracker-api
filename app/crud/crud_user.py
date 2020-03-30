@@ -12,19 +12,17 @@ from app.schemas.user import UserCreate, UserUpdate
 
 
 class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
-    @staticmethod
-    async def get_by_email(email: str) -> Record:
-        query = User.__table__.select().where(email == User.email)
+
+    async def get_by_email(self, email: str) -> Record:
+        query = self.model.__table__.select().where(email == User.email)
         return await database.fetch_one(query=query)
 
-    @staticmethod
-    async def get_by_username(username: str) -> Record:
-        query = User.__table__.select().where(username == User.username)
+    async def get_by_username(self, username: str) -> Record:
+        query = self.model.__table__.select().where(username == User.username)
         return await database.fetch_one(query=query)
 
-    @staticmethod
-    async def exists(username: str, email: str) -> bool:
-        query = User.__table__.select().where((username == User.username) & (email == User.email))
+    async def exists(self, username: str, email: str) -> bool:
+        query = self.model.__table__.select().where((username == User.username) & (email == User.email))
         return await database.fetch_one(query=query)
 
     async def create(self, obj_in: UserCreate) -> int:
@@ -33,13 +31,13 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         :param obj_in:
         :return: user id
         """
-        query = User.__table__.insert().values(email=obj_in.email,
-                                               username=obj_in.username,
-                                               hashed_password=get_password_hash(obj_in.password),
-                                               first_name=obj_in.first_name,
-                                               last_name=obj_in.last_name,
-                                               is_superuser=obj_in.is_superuser,
-                                               is_active=obj_in.is_active)
+        query = self.model.__table__.insert().values(email=obj_in.email,
+                                                     username=obj_in.username,
+                                                     hashed_password=get_password_hash(obj_in.password),
+                                                     first_name=obj_in.first_name,
+                                                     last_name=obj_in.last_name,
+                                                     is_superuser=obj_in.is_superuser,
+                                                     is_active=obj_in.is_active)
         return await database.execute(query=query)
 
     async def update(self, id: int, obj_in: UserUpdate) -> Record:
