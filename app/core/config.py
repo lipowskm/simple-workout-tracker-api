@@ -13,7 +13,6 @@ def get_env_boolean(var_name, default_value=False):
 
 load_dotenv(find_dotenv())
 
-
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 8
 DATABASE_URL = os.getenv("DATABASE_URL")
 SECRET_KEY = os.getenv("SECRET_KEY")
