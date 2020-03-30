@@ -13,7 +13,7 @@ router = APIRouter()
 
 @router.get("/", response_model=List[User])
 async def read_users(
-        # current_user: DBUser = Depends(get_current_active_superuser),
+        current_user: DBUser = Depends(get_current_active_superuser),
         skip: int = 0,
         limit: int = 100,
 ):
