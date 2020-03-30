@@ -2,11 +2,9 @@ from datetime import timedelta
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy.orm import Session
 from starlette.status import HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND
 
 from app import crud
-from app.api.utils.db import get_db
 from app.api.utils.security import get_current_user
 from app.core import config
 from app.core.token import create_access_token
@@ -18,18 +16,18 @@ router = APIRouter()
 
 
 @router.post("/login/access-token", tags=["login"], response_model=Token)
-def login_access_token(
-    db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()
+async def login_access_token(
+        form_data: OAuth2PasswordRequestForm = Depends()
 ):
     """
     OAuth2 compatible token login, get an access token for future requests
     """
-    user = crud.user.authenticate(
-        db, username=form_data.username, password=form_data.password
+    user = await crud.user.authenticate(
+        username=form_data.username, password=form_data.password
     )
     if not user:
         raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="Incorrect login or password")
-    elif not crud.user.is_active(user):
+    elif not user.is_active:
         raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Inactive user")
     access_token_expires = timedelta(minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
     return {
