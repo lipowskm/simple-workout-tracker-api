@@ -87,18 +87,20 @@ async def update_user(
             status_code=HTTP_404_NOT_FOUND,
             detail="The user does not exist in the system",
         )
-    other_user = await crud.user.get_by_email(email=user_in.email)
-    if other_user and (user != other_user):
-        raise HTTPException(
-            status_code=HTTP_409_CONFLICT,
-            detail="The user with this email already exists in the system.",
-        )
-    other_user = await crud.user.get_by_username(username=user_in.username)
-    if other_user and (user != other_user):
-        raise HTTPException(
-            status_code=HTTP_409_CONFLICT,
-            detail="Username already taken.",
-        )
+    if user_in.email:
+        other_user = await crud.user.get_by_email(email=user_in.email)
+        if other_user and (user != other_user):
+            raise HTTPException(
+                status_code=HTTP_409_CONFLICT,
+                detail="The user with this email already exists in the system.",
+            )
+    if user_in.username:
+        other_user = await crud.user.get_by_username(username=user_in.username)
+        if other_user and (user != other_user):
+            raise HTTPException(
+                status_code=HTTP_409_CONFLICT,
+                detail="Username already taken.",
+            )
     user_id = await crud.user.update(id=user_id, obj_in=user_in)
     return await crud.user.get(id=user_id)
 
