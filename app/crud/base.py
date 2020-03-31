@@ -44,7 +44,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     async def create(self, obj_in: CreateSchemaType) -> int:
         """
         Create object in database.
-        :param obj_in: Class inheriting from pydantic BaseModel with data needed for object creation.
+        :param obj_in: Class inheriting from pydantic BaseModel with attributes needed for object creation.
         :return: id of created object.
         """
         obj_in_data = jsonable_encoder(obj_in)
@@ -56,7 +56,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         """
         Update object with given id.
         :param id: id of updated object in database.
-        :param obj_in: Class inheriting from pydantic BaseModel with data needed for object update.
+        :param obj_in: Class inheriting from pydantic BaseModel with attributes needed for object update.
         :return: id of updated object in database.
         """
         obj_in_data = jsonable_encoder(obj_in)
