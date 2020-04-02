@@ -48,8 +48,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         :return: id of created object.
         """
         obj_in_data = jsonable_encoder(obj_in)
-        db_obj = self.model(**obj_in_data)
-        query = self.model.__table__.insert().values(**db_obj)
+        query = self.model.__table__.insert().values(**obj_in_data)
         return await database.execute(query=query)
 
     async def update(self, id: int, obj_in: UpdateSchemaType) -> int:
