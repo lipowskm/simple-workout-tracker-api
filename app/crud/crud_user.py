@@ -19,11 +19,6 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         return await database.fetch_one(query=query)
 
     async def create(self, obj_in: UserCreate) -> int:
-        """
-        Returns user id for some reason
-        :param obj_in:
-        :return: user id
-        """
         query = self.model.__table__.insert().values(email=obj_in.email,
                                                      username=obj_in.username,
                                                      hashed_password=get_password_hash(obj_in.password),

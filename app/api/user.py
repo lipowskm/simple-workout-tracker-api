@@ -11,7 +11,7 @@ from app.schemas.user import User, UserCreate, UserUpdate
 router = APIRouter()
 
 
-@router.get("/", response_model=List[User])
+@router.get("", response_model=List[User])
 async def read_users(
         current_user: DBUser = Depends(get_current_active_superuser),
         skip: int = 0,
@@ -23,7 +23,7 @@ async def read_users(
     return await crud.user.get_multi(skip, limit)
 
 
-@router.post("/", response_model=User)
+@router.post("", response_model=User)
 async def create_user(
         user_in: UserCreate,
         current_user: DBUser = Depends(get_current_active_superuser)
