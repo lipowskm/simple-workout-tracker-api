@@ -18,7 +18,7 @@ def test_email(
     email_to: EmailStr, current_user: DBUser = Depends(get_current_active_superuser)
 ):
     """
-    Test emails.
+    Send test email to given email address
     """
     response = send_test_email(email_to=email_to)
     if response.status_code != 250:
