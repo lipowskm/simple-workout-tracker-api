@@ -52,9 +52,9 @@ def send_test_email(email_to: str):
     )
 
 
-def send_reset_password_email(email_to: str, email: str, token: str):
+def send_reset_password_email(email: str, username: str, token: str):
     project_name = config.PROJECT_NAME
-    subject = f"{project_name} - Password recovery for user {email}"
+    subject = f"{project_name} - Password recovery for user {username}"
     with open(Path(config.EMAIL_TEMPLATES_DIR) / "reset_password.html") as f:
         template_str = f.read()
     if hasattr(token, "decode"):
@@ -64,14 +64,14 @@ def send_reset_password_email(email_to: str, email: str, token: str):
     server_host = config.SERVER_HOST
     link = f"{server_host}/reset-password?token={use_token}"
     return send_email(
-        email_to=email_to,
+        email_to=email,
         subject_template=subject,
         html_template=template_str,
         environment={
             "project_name": config.PROJECT_NAME,
-            "username": email,
-            "email": email_to,
-            "valid_hours": config.EMAIL_RESET_TOKEN_EXPIRE_HOURS,
+            "username": username,
+            "email": email,
+            "valid_hours": config.EMAIL_RESET_TOKEN_EXPIRE_MINUTES,
             "link": link,
         },
     )
@@ -98,7 +98,7 @@ def send_new_account_email(email_to: str, username: str, password: str):
 
 
 def generate_password_reset_token(email):
-    delta = timedelta(hours=config.EMAIL_RESET_TOKEN_EXPIRE_HOURS)
+    delta = timedelta(hours=config.EMAIL_RESET_TOKEN_EXPIRE_MINUTES)
     now = datetime.utcnow()
     expires = now + delta
     exp = expires.timestamp()
