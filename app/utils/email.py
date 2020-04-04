@@ -1,13 +1,9 @@
 import logging
-from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Optional
 
 import emails
-import jwt
 from emails.backend.response import SMTPResponse
 from emails.template import JinjaTemplate
-from jwt.exceptions import InvalidTokenError
 
 from app.core import config
 
