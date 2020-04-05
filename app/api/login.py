@@ -12,7 +12,7 @@ from app.core.token import create_access_token, generate_password_reset_token, v
 from app.models.user import User as DBUser
 from app.schemas.msg import Msg
 from app.schemas.token import Token
-from app.schemas.user import UserCreate, User
+from app.schemas.user import UserCreate
 from app.utils.email import send_reset_password_email, send_new_account_email
 
 router = APIRouter()
