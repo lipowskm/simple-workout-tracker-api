@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from fastapi import APIRouter, Depends, HTTPException, Body
+from fastapi import APIRouter, Depends, HTTPException, Body, Header
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import EmailStr
 from starlette.status import HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND, HTTP_409_CONFLICT
@@ -72,7 +72,7 @@ async def register(username: str = Body(...),
                       is_email_verified=False
                       )
     await crud.user.create(user)
-    register_token = create_register_token(user=user)
+    register_token = create_register_token(data={"email": user.email})
     send_new_account_email(
         email=user.email, username=user.username, token=register_token, password=user.password
     )

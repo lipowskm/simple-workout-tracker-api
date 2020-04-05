@@ -7,7 +7,7 @@ from jwt import InvalidTokenError
 
 from app import crud
 from app.core import config
-from app.schemas.user import User, UserCreate, UserUpdate
+from app.schemas.user import User, UserCreate
 
 ALGORITHM = "HS256"
 access_token_jwt_subject = "access"
@@ -25,8 +25,8 @@ def create_access_token(*, data: dict, expires_delta: timedelta = None):
     return encoded_jwt
 
 
-def create_register_token(*, user: UserCreate, expires_delta: timedelta = None):
-    to_encode = jsonable_encoder(user)
+def create_register_token(*, data: dict, expires_delta: timedelta = None):
+    to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
