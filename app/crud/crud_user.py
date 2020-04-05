@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from asyncpg import Record
 from fastapi.encoders import jsonable_encoder
 
@@ -24,6 +26,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
                                                      hashed_password=get_password_hash(obj_in.password),
                                                      first_name=obj_in.first_name,
                                                      last_name=obj_in.last_name,
+                                                     date_created=datetime.utcnow(),
                                                      is_email_verified=obj_in.is_email_verified,
                                                      is_superuser=obj_in.is_superuser,
                                                      is_active=obj_in.is_active).returning(self.model.id)

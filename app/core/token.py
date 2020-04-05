@@ -2,12 +2,11 @@ from datetime import datetime, timedelta
 from typing import Optional
 
 import jwt
-from fastapi.encoders import jsonable_encoder
 from jwt import InvalidTokenError
 
 from app import crud
 from app.core import config
-from app.schemas.user import User, UserCreate
+from app.schemas.user import User
 
 ALGORITHM = "HS256"
 access_token_jwt_subject = "access"

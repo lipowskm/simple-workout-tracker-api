@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel, EmailStr
@@ -15,6 +16,7 @@ class UserBase(BaseModel):
 
 class UserBaseInDB(UserBase):
     id: int = None
+    date_created: datetime = None
 
 
 # Properties to receive via API on creation
