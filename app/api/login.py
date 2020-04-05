@@ -32,6 +32,8 @@ async def login_access_token(
         raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="Incorrect login or password")
     elif not user.is_active:
         raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Inactive user")
+    elif not user.is_email_verified:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="User email not verified yet")
     access_token_expires = timedelta(minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
     return {
         "access_token": create_access_token(
@@ -48,25 +50,28 @@ async def register(username: str = Body(...),
                    first_name: str = Body(...),
                    last_name: str = Body(None)):
     """
-    Create register token and send verification email to user
+    Create new account and send verification email with token to user.
     """
     user = await crud.user.get_by_email(email=email)
     if user:
         raise HTTPException(
             status_code=HTTP_409_CONFLICT,
-            detail="The user with this email already exists in the system.",
+            detail="The user with this email already exists in the system",
         )
     user = await crud.user.get_by_username(username=username)
     if user:
         raise HTTPException(
             status_code=HTTP_409_CONFLICT,
-            detail="Username already taken.",
+            detail="Username already taken",
         )
     user = UserCreate(username=username,
                       password=password,
                       email=email,
                       first_name=first_name,
-                      last_name=last_name)
+                      last_name=last_name,
+                      is_email_verified=False
+                      )
+    await crud.user.create(user)
     register_token = create_register_token(user=user)
     send_new_account_email(
         email=user.email, username=user.username, token=register_token, password=user.password
@@ -77,19 +82,26 @@ async def register(username: str = Body(...),
 @router.post("/verify-account", tags=["login"], response_model=Msg)
 async def verify_account(token: str):
     """
-    Verify account using token and create user in database
+    Verify account using token.
     """
-    user_in = verify_register_token(token)
-    if not user_in:
+    email = await verify_register_token(token)
+    if not email:
         raise HTTPException(status_code=400, detail="Invalid token")
-    record = await crud.user.get_by_email(email=user_in.email)
-    if record:
+    record = await crud.user.get_by_email(email)
+    if not record:
+        raise HTTPException(
+            status_code=404,
+            detail="The user with this email does not exist in the system."
+        )
+    user = DBUser(**record)
+    if user.is_email_verified:
         raise HTTPException(
             status_code=HTTP_409_CONFLICT,
             detail="User already verified",
         )
-    await crud.user.create(obj_in=user_in)
-    return {"msg": "Account created"}
+    user.is_email_verified = True
+    await crud.user.update(user.id, user)
+    return {"msg": "Account verified"}
 
 
 @router.post("/password-recovery/{email}", tags=["login"], response_model=Msg)
@@ -98,11 +110,10 @@ async def recover_password(email: str):
     Password Recovery
     """
     record = await crud.user.get_by_email(email=email)
-
     if not record:
         raise HTTPException(
             status_code=404,
-            detail="The user with this email does not exist in the system."
+            detail="The user with this email does not exist in the system"
         )
     user = DBUser(**record)
     password_reset_token = generate_password_reset_token(email=email, subject=user.id)
@@ -124,7 +135,7 @@ async def reset_password(token: str = Body(...), new_password: str = Body(...)):
     if not record:
         raise HTTPException(
             status_code=404,
-            detail="The user with this email does not exist in the system.",
+            detail="The user with this email does not exist in the system",
         )
     user = DBUser(**record)
     if not user.is_active:

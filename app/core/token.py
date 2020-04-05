@@ -7,7 +7,7 @@ from jwt import InvalidTokenError
 
 from app import crud
 from app.core import config
-from app.schemas.user import User, UserCreate
+from app.schemas.user import User, UserCreate, UserUpdate
 
 ALGORITHM = "HS256"
 access_token_jwt_subject = "access"
@@ -36,11 +36,11 @@ def create_register_token(*, user: UserCreate, expires_delta: timedelta = None):
     return encoded_jwt
 
 
-def verify_register_token(token) -> Optional[UserCreate]:
+async def verify_register_token(token) -> Optional[str]:
     try:
         decoded_token = jwt.decode(token, config.SECRET_KEY, algorithms=["HS256"])
         assert decoded_token["sub"] == register_token_jwt_subject
-        return UserCreate(**decoded_token)
+        return decoded_token["email"]
     except InvalidTokenError:
         return None
     except AssertionError:

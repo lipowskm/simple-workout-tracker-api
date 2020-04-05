@@ -35,13 +35,13 @@ async def create_user(
     if record:
         raise HTTPException(
             status_code=HTTP_409_CONFLICT,
-            detail="The user with this email already exists in the system.",
+            detail="The user with this email already exists in the system",
         )
     record = await crud.user.get_by_username(username=user_in.username)
     if record:
         raise HTTPException(
             status_code=HTTP_409_CONFLICT,
-            detail="Username already taken.",
+            detail="Username already taken",
         )
     user_id = await crud.user.create(obj_in=user_in)
     return await crud.user.get(user_id)
@@ -92,14 +92,14 @@ async def update_user(
         if other_user and (user != other_user):
             raise HTTPException(
                 status_code=HTTP_409_CONFLICT,
-                detail="The user with this email already exists in the system.",
+                detail="The user with this email already exists in the system",
             )
     if user_in.username:
         other_user = await crud.user.get_by_username(username=user_in.username)
         if other_user and (user != other_user):
             raise HTTPException(
                 status_code=HTTP_409_CONFLICT,
-                detail="Username already taken.",
+                detail="Username already taken",
             )
     user_id = await crud.user.update(id=user_id, obj_in=user_in)
     return await crud.user.get(id=user_id)

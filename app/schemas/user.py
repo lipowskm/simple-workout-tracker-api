@@ -9,6 +9,7 @@ class UserBase(BaseModel):
     last_name: Optional[str]
     username: Optional[str]
     is_active: Optional[bool] = True
+    is_email_verified: Optional[bool] = True
     is_superuser: Optional[bool] = False
 
 
@@ -24,7 +25,7 @@ class UserCreate(UserBase):
 
 
 # Properties to receive via API on superuser creation
-class SuperUserCreate(UserBaseInDB):
+class SuperUserCreate(UserBase):
     username: str
     password: str
 

@@ -24,16 +24,17 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
                                                      hashed_password=get_password_hash(obj_in.password),
                                                      first_name=obj_in.first_name,
                                                      last_name=obj_in.last_name,
+                                                     is_email_verified=obj_in.is_email_verified,
                                                      is_superuser=obj_in.is_superuser,
                                                      is_active=obj_in.is_active).returning(self.model.id)
         return await database.execute(query=query)
 
     async def update(self, id: int, obj_in: UserUpdate) -> int:
         obj_in_data = jsonable_encoder(obj_in)
-        if obj_in_data['password']:
+        if 'password' in obj_in_data.keys() and obj_in_data['password']:
             obj_in_data['hashed_password'] = get_password_hash(obj_in_data.pop('password'))
-        else:
-            obj_in_data['hashed_password'] = obj_in_data.pop('password')
+        elif 'hashed_password' in obj_in_data:
+            obj_in_data['hashed_password'] = None
         query = (self.model.__table__.update().where(id == self.model.id).values(
             {k: v for k, v in obj_in_data.items() if v})).returning(
             self.model.id)
