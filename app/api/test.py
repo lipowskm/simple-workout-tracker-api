@@ -15,12 +15,12 @@ router = APIRouter()
 
 @router.post("/test-email", response_model=Msg, status_code=201)
 def test_email(
-    email_to: EmailStr, current_user: DBUser = Depends(get_current_active_superuser)
+    email: EmailStr, current_user: DBUser = Depends(get_current_active_superuser)
 ):
     """
     Send test email to given email address
     """
-    response = send_test_email(email_to=email_to)
+    response = send_test_email(email=email)
     if response.status_code != 250:
         raise HTTPException(
             status_code=HTTP_503_SERVICE_UNAVAILABLE,

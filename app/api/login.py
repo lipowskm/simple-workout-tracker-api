@@ -13,7 +13,7 @@ from app.models.user import User as DBUser
 from app.schemas.msg import Msg
 from app.schemas.token import Token
 from app.schemas.user import UserCreate
-from app.utils.email import send_reset_password_email, send_new_account_email
+from app.utils.email import send_reset_password_email, send_verify_account_email, send_new_account_email
 
 router = APIRouter()
 
@@ -73,8 +73,8 @@ async def register(username: str = Body(...),
                       )
     await crud.user.create(user)
     register_token = create_register_token(data={"email": user.email})
-    send_new_account_email(
-        email=user.email, username=user.username, token=register_token, password=user.password
+    send_verify_account_email(
+        email=user.email, username=user.username, first_name=user.first_name, token=register_token
     )
     return {"msg": "New account email sent"}
 
@@ -101,6 +101,7 @@ async def verify_account(token: str):
         )
     user.is_email_verified = True
     await crud.user.update(user.id, user)
+    send_new_account_email(email=user.email, username=user.username, first_name=user.first_name)
     return {"msg": "Account verified"}
 
 
@@ -118,7 +119,7 @@ async def recover_password(email: str):
     user = DBUser(**record)
     password_reset_token = generate_password_reset_token(email=email, subject=user.id)
     send_reset_password_email(
-        email=user.email, username=user.username, token=password_reset_token
+        email=user.email, username=user.username, first_name=user.first_name, token=password_reset_token
     )
     return {"msg": "Password recovery email sent"}
 

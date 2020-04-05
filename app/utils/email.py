@@ -35,20 +35,20 @@ def send_email(email_to: str, subject_template="", html_template="", environment
     return response
 
 
-def send_test_email(email_to: str):
+def send_test_email(email: str):
     project_name = config.PROJECT_NAME
     subject = f"{project_name} - Test email"
     with open(Path(config.EMAIL_TEMPLATES_DIR) / "test_email.html") as f:
         template_str = f.read()
     return send_email(
-        email_to=email_to,
+        email_to=email,
         subject_template=subject,
         html_template=template_str,
-        environment={"project_name": config.PROJECT_NAME, "email": email_to},
+        environment={"project_name": config.PROJECT_NAME, "email": email},
     )
 
 
-def send_reset_password_email(email: str, username: str, token: str):
+def send_reset_password_email(email: str, username: str, first_name: str, token: str):
     project_name = config.PROJECT_NAME
     subject = f"{project_name} - Password recovery for user {username}"
     with open(Path(config.EMAIL_TEMPLATES_DIR) / "reset_password.html") as f:
@@ -66,17 +66,17 @@ def send_reset_password_email(email: str, username: str, token: str):
         environment={
             "project_name": config.PROJECT_NAME,
             "username": username,
-            "email": email,
-            "valid_hours": config.EMAIL_RESET_TOKEN_EXPIRE_MINUTES,
+            "first_name": first_name,
+            "valid_minutes": config.EMAIL_RESET_TOKEN_EXPIRE_MINUTES,
             "link": link,
         },
     )
 
 
-def send_new_account_email(email: str, username: str, password: str, token: str):
+def send_verify_account_email(email: str, username: str, first_name: str, token: str):
     project_name = config.PROJECT_NAME
     subject = f"{project_name} - Verify account for user {username}"
-    with open(Path(config.EMAIL_TEMPLATES_DIR) / "new_account.html") as f:
+    with open(Path(config.EMAIL_TEMPLATES_DIR) / "verify_account.html") as f:
         template_str = f.read()
     if hasattr(token, "decode"):
         use_token = token.decode()
@@ -91,8 +91,27 @@ def send_new_account_email(email: str, username: str, password: str, token: str)
         environment={
             "project_name": config.PROJECT_NAME,
             "username": username,
-            "password": password,
-            "email": email,
+            "first_name": first_name,
+            "link": link,
+            "valid_minutes": config.EMAIL_NEW_ACCOUNT_TOKEN_EXPIRE_MINUTES
+        }
+    )
+
+
+def send_new_account_email(email: str, username: str, first_name: str):
+    project_name = config.PROJECT_NAME
+    subject = f"{project_name} - Account {username} created successfully"
+    with open(Path(config.EMAIL_TEMPLATES_DIR) / "new_account.html") as f:
+        template_str = f.read()
+    link = config.SERVER_HOST
+    return send_email(
+        email_to=email,
+        subject_template=subject,
+        html_template=template_str,
+        environment={
+            "project_name": config.PROJECT_NAME,
+            "username": username,
+            "first_name": first_name,
             "link": link,
         }
     )
