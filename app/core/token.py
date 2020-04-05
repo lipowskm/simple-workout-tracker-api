@@ -2,14 +2,16 @@ from datetime import datetime, timedelta
 from typing import Optional
 
 import jwt
+from fastapi.encoders import jsonable_encoder
 from jwt import InvalidTokenError
 
 from app import crud
 from app.core import config
-from app.schemas.user import User
+from app.schemas.user import User, UserCreate
 
 ALGORITHM = "HS256"
 access_token_jwt_subject = "access"
+register_token_jwt_subject = "register"
 
 
 def create_access_token(*, data: dict, expires_delta: timedelta = None):
@@ -21,6 +23,28 @@ def create_access_token(*, data: dict, expires_delta: timedelta = None):
     to_encode.update({"exp": expire, "sub": access_token_jwt_subject})
     encoded_jwt = jwt.encode(to_encode, config.SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
+
+
+def create_register_token(*, user: UserCreate, expires_delta: timedelta = None):
+    to_encode = jsonable_encoder(user)
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=30)
+    to_encode.update({"exp": expire, "sub": register_token_jwt_subject})
+    encoded_jwt = jwt.encode(to_encode, config.SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+
+def verify_register_token(token) -> Optional[UserCreate]:
+    try:
+        decoded_token = jwt.decode(token, config.SECRET_KEY, algorithms=["HS256"])
+        assert decoded_token["sub"] == register_token_jwt_subject
+        return UserCreate(**decoded_token)
+    except InvalidTokenError:
+        return None
+    except AssertionError:
+        return None
 
 
 def generate_password_reset_token(email, subject):
@@ -44,4 +68,6 @@ async def verify_password_reset_token(token) -> Optional[str]:
         assert decoded_token["sub"] == subject
         return decoded_token["email"]
     except InvalidTokenError:
+        return None
+    except AssertionError:
         return None

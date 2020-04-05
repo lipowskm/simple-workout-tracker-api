@@ -73,21 +73,26 @@ def send_reset_password_email(email: str, username: str, token: str):
     )
 
 
-def send_new_account_email(email_to: str, username: str, password: str):
+def send_new_account_email(email: str, username: str, password: str, token: str):
     project_name = config.PROJECT_NAME
-    subject = f"{project_name} - New account for user {username}"
+    subject = f"{project_name} - Verify account for user {username}"
     with open(Path(config.EMAIL_TEMPLATES_DIR) / "new_account.html") as f:
         template_str = f.read()
-    link = config.SERVER_HOST
+    if hasattr(token, "decode"):
+        use_token = token.decode()
+    else:
+        use_token = token
+    server_host = config.SERVER_HOST
+    link = f"{server_host}/verify-account?token={use_token}"
     return send_email(
-        email_to=email_to,
+        email_to=email,
         subject_template=subject,
         html_template=template_str,
         environment={
             "project_name": config.PROJECT_NAME,
             "username": username,
             "password": password,
-            "email": email_to,
+            "email": email,
             "link": link,
-        },
+        }
     )

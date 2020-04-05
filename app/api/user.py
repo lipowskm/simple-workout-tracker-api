@@ -31,14 +31,14 @@ async def create_user(
     """
     Create new user.
     """
-    user = await crud.user.get_by_email(email=user_in.email)
-    if user:
+    record = await crud.user.get_by_email(email=user_in.email)
+    if record:
         raise HTTPException(
             status_code=HTTP_409_CONFLICT,
             detail="The user with this email already exists in the system.",
         )
-    user = await crud.user.get_by_username(username=user_in.username)
-    if user:
+    record = await crud.user.get_by_username(username=user_in.username)
+    if record:
         raise HTTPException(
             status_code=HTTP_409_CONFLICT,
             detail="Username already taken.",
