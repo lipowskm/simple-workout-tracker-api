@@ -6,8 +6,6 @@
     </content>
     <orderEntry type="jdk" jdkName="Python 3.8 (simple-workout-tracker-api)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-  </component>
-  <component name="TestRunnerService">
-    <option name="PROJECT_TEST_RUNNER" value="Unittests" />
+    <orderEntry type="module" module-name="simple-workout-tracker-dashboard" />
   </component>
 </module>
