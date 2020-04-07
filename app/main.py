@@ -3,6 +3,7 @@ from urllib.request import Request
 
 import uvicorn
 from fastapi import FastAPI
+from starlette.middleware.cors import CORSMiddleware
 
 from app import init_data
 from app.api.api import api_router
@@ -10,6 +11,24 @@ from app.core import config
 from app.database.session import database
 
 app = FastAPI(title='Simple Workout Tracker API')
+
+# CORS
+origins = []
+
+# Set all CORS enabled origins
+if config.BACKEND_CORS_ORIGINS:
+    origins_raw = config.BACKEND_CORS_ORIGINS.split(",")
+    for origin in origins_raw:
+        use_origin = origin.strip()
+        origins.append(use_origin)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    ),
+
 app.include_router(api_router, prefix="/api")
 
 

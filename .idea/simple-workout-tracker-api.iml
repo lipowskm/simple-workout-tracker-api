@@ -7,5 +7,8 @@
     <orderEntry type="jdk" jdkName="Python 3.8 (simple-workout-tracker-api)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="simple-workout-tracker-dashboard" />
+    <orderEntry type="module" module-name="simple-workout-tracker-dashboard" />
+    <orderEntry type="module" module-name="simple-workout-tracker-dashboard" />
+    <orderEntry type="module" module-name="simple-workout-tracker-dashboard" />
   </component>
 </module>

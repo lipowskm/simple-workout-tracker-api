@@ -25,6 +25,7 @@ EMAILS_FROM_NAME = PROJECT_NAME
 SECRET_KEY = os.getenv("SECRET_KEY")
 SERVER_HOST = os.getenv("SERVER_HOST")
 SERVER_PORT = int(os.getenv("SERVER_PORT"))
+BACKEND_CORS_ORIGINS = os.getenv("BACKEND_CORS_ORIGINS")
 SMTP_TLS = get_env_boolean("SMTP_TLS", True)
 SMTP_PORT = None
 _SMTP_PORT = os.getenv("SMTP_PORT")
