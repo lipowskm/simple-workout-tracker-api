@@ -1,5 +1,7 @@
 import logging
 from pathlib import Path
+from smtplib import SMTPException
+from typing import Union
 
 import emails
 from emails.backend.response import SMTPResponse
@@ -10,7 +12,7 @@ from app.core import config
 password_reset_jwt_subject = "preset"
 
 
-def send_email(email_to: str, subject_template="", html_template="", environment=None) -> SMTPResponse:
+def send_email(email_to: str, subject_template="", html_template="", environment=None) -> Union[SMTPResponse, bool]:
     if environment is None:
         environment = {}
     assert config.EMAILS_ENABLED, "no provided configuration for email variables"
@@ -28,10 +30,15 @@ def send_email(email_to: str, subject_template="", html_template="", environment
         smtp_options["password"] = config.SMTP_PASSWORD
     response = message.send(to=email_to, render=environment, smtp=smtp_options)
     try:
+        response = message.send(to=email_to, render=environment, smtp=smtp_options)
         assert response.status_code == 250
         logging.info(f"Send email result: {response}")
     except AssertionError:
         logging.error(f"Failed to send email, send email result: {response}")
+        return False
+    except SMTPException as error:
+        logging.error(f"Error while trying to send email: {error}")
+        return False
     return response
 
 

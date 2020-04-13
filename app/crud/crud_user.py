@@ -13,7 +13,7 @@ from app.schemas.user import UserCreate, UserUpdate
 class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
 
     async def get_by_email(self, email: str) -> Record:
-        query = self.model.__table__.select().where(email == self.model.email)
+        query = self.model.__table__.select().where(email.lower() == self.model.email)
         return await database.fetch_one(query=query)
 
     async def get_by_username(self, username: str) -> Record:
@@ -21,7 +21,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         return await database.fetch_one(query=query)
 
     async def create(self, obj_in: UserCreate) -> int:
-        query = self.model.__table__.insert().values(email=obj_in.email,
+        query = self.model.__table__.insert().values(email=obj_in.email.lower(),
                                                      username=obj_in.username,
                                                      hashed_password=get_password_hash(obj_in.password),
                                                      first_name=obj_in.first_name,

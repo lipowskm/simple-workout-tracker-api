@@ -1,9 +1,9 @@
 from datetime import timedelta
 
-from fastapi import APIRouter, Depends, HTTPException, Body
+from fastapi import APIRouter, Depends, HTTPException, Body, Form
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import EmailStr
-from starlette.status import HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND, HTTP_409_CONFLICT
+from starlette.status import HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND, HTTP_409_CONFLICT, HTTP_500_INTERNAL_SERVER_ERROR
 
 from app import crud
 from app.core import config
@@ -33,7 +33,7 @@ async def login_access_token(
     elif not user.is_active:
         raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Inactive user")
     elif not user.is_email_verified:
-        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="User email not verified yet")
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Please verify your account via email")
     access_token_expires = timedelta(minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
     return {
         "access_token": create_access_token(
@@ -44,11 +44,11 @@ async def login_access_token(
 
 
 @router.post("/register", tags=["login"], response_model=Msg)
-async def register(username: str = Body(...),
-                   password: str = Body(...),
-                   email: EmailStr = Body(...),
-                   first_name: str = Body(...),
-                   last_name: str = Body(None)):
+async def register(username: str = Form(...),
+                   password: str = Form(...),
+                   email: EmailStr = Form(...),
+                   first_name: str = Form(...),
+                   last_name: str = Form(None)):
     """
     Create new account and send verification email with token to user.
     """
@@ -71,12 +71,18 @@ async def register(username: str = Body(...),
                       last_name=last_name,
                       is_email_verified=False
                       )
-    await crud.user.create(user)
+    user_id = await crud.user.create(user)
     register_token = create_register_token(data={"email": user.email})
-    send_verify_account_email(
+    if send_verify_account_email(
         email=user.email, username=user.username, first_name=user.first_name, token=register_token
-    )
-    return {"msg": "New account email sent"}
+    ):
+        return {"msg": "New account email sent, check your inbox to verify your account"}
+    else:
+        await crud.user.remove(user_id)
+        raise HTTPException(
+            status_code=HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error while trying to send email, please try again",
+        )
 
 
 @router.post("/verify-account", tags=["login"], response_model=Msg)
