@@ -45,8 +45,12 @@ def send_email(email_to: str, subject_template="", html_template="", environment
 def send_test_email(email: str):
     project_name = config.PROJECT_NAME
     subject = f"{project_name} - Test email"
-    with open(Path(config.EMAIL_TEMPLATES_DIR) / "test_email.html") as f:
-        template_str = f.read()
+    try:
+        with open(Path(config.EMAIL_TEMPLATES_DIR) / "test_email.html") as f:
+            template_str = f.read()
+    except IOError:
+        logging.error(f"Unable to open email template path")
+        return False
     return send_email(
         email_to=email,
         subject_template=subject,
@@ -58,8 +62,12 @@ def send_test_email(email: str):
 def send_reset_password_email(email: str, username: str, first_name: str, token: str):
     project_name = config.PROJECT_NAME
     subject = f"{project_name} - Password recovery for user {username}"
-    with open(Path(config.EMAIL_TEMPLATES_DIR) / "reset_password.html") as f:
-        template_str = f.read()
+    try:
+        with open(Path(config.EMAIL_TEMPLATES_DIR) / "reset_password.html") as f:
+            template_str = f.read()
+    except IOError:
+        logging.error(f"Unable to open email template path")
+        return False
     if hasattr(token, "decode"):
         use_token = token.decode()
     else:
@@ -83,8 +91,12 @@ def send_reset_password_email(email: str, username: str, first_name: str, token:
 def send_verify_account_email(email: str, username: str, first_name: str, token: str):
     project_name = config.PROJECT_NAME
     subject = f"{project_name} - Verify account for user {username}"
-    with open(Path(config.EMAIL_TEMPLATES_DIR) / "verify_account.html") as f:
-        template_str = f.read()
+    try:
+        with open(Path(config.EMAIL_TEMPLATES_DIR) / "verify_account.html") as f:
+            template_str = f.read()
+    except IOError:
+        logging.error(f"Unable to open email template path")
+        return False
     if hasattr(token, "decode"):
         use_token = token.decode()
     else:
@@ -108,8 +120,12 @@ def send_verify_account_email(email: str, username: str, first_name: str, token:
 def send_new_account_email(email: str, username: str, first_name: str):
     project_name = config.PROJECT_NAME
     subject = f"{project_name} - Account {username} created successfully"
-    with open(Path(config.EMAIL_TEMPLATES_DIR) / "new_account.html") as f:
-        template_str = f.read()
+    try:
+        with open(Path(config.EMAIL_TEMPLATES_DIR) / "new_account.html") as f:
+            template_str = f.read()
+    except IOError:
+        logging.error(f"Unable to open email template path")
+        return False
     link = config.SERVER_HOST
     return send_email(
         email_to=email,
