@@ -73,3 +73,12 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         """
         query = self.model.__table__.delete().where(id == self.model.id).returning(self.model.id)
         return await database.execute(query=query)
+
+    async def remove_all(self) -> int:
+        """
+        Remove all rows from table.
+        :param id: id of object in database.
+        :return: id of object in database.
+        """
+        query = self.model.__table__.delete()
+        return await database.execute(query=query)

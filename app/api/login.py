@@ -18,7 +18,9 @@ from app.utils.email import send_reset_password_email, send_verify_account_email
 router = APIRouter()
 
 
-@router.post("/login/access-token", tags=["login"], response_model=Token)
+@router.post("/login/access-token",
+             tags=["login"],
+             response_model=Token)
 async def login_access_token(
         form_data: OAuth2PasswordRequestForm = Depends()
 ):
@@ -29,7 +31,7 @@ async def login_access_token(
         username=form_data.username, password=form_data.password
     )
     if not user:
-        raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="Incorrect login or password")
+        raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="Incorrect credentials")
     elif not user.is_active:
         raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Inactive user")
     elif not user.is_email_verified:
@@ -43,12 +45,16 @@ async def login_access_token(
     }
 
 
-@router.post("/register", tags=["login"], response_model=Msg)
-async def register(username: str = Form(...),
-                   password: str = Form(...),
-                   email: EmailStr = Form(...),
-                   first_name: str = Form(...),
-                   last_name: str = Form(None)):
+@router.post("/register",
+             tags=["login"],
+             response_model=Msg)
+async def register(
+        username: str = Form(...),
+        password: str = Form(...),
+        email: EmailStr = Form(...),
+        first_name: str = Form(...),
+        last_name: str = Form(None)
+):
     """
     Create new account and send verification email with token to user.
     """
@@ -74,7 +80,7 @@ async def register(username: str = Form(...),
     user_id = await crud.user.create(user)
     register_token = create_register_token(data={"email": user.email})
     if send_verify_account_email(
-        email=user.email, username=user.username, first_name=user.first_name, token=register_token
+            email=user.email, username=user.username, first_name=user.first_name, token=register_token
     ):
         return {"msg": "New account email sent, check your inbox to verify your account"}
     else:
@@ -85,14 +91,18 @@ async def register(username: str = Form(...),
         )
 
 
-@router.post("/verify-account", tags=["login"], response_model=Msg)
-async def verify_account(token: str):
+@router.post("/verify-account",
+             tags=["login"],
+             response_model=Msg)
+async def verify_account(
+        token: str = Form(...)
+):
     """
     Verify account using token.
     """
     email = await verify_register_token(token)
     if not email:
-        raise HTTPException(status_code=400, detail="Invalid token")
+        raise HTTPException(status_code=400, detail="Invalid email verify token")
     record = await crud.user.get_by_email(email)
     if not record:
         raise HTTPException(
@@ -105,16 +115,20 @@ async def verify_account(token: str):
             status_code=HTTP_409_CONFLICT,
             detail="User already verified",
         )
-    user.is_email_verified = True
-    await crud.user.update(user.id, user)
+    await crud.user.update(user.id, {'is_email_verified': True})
     send_new_account_email(email=user.email, username=user.username, first_name=user.first_name)
     return {"msg": "Account verified"}
 
 
-@router.post("/password-recovery/{email}", tags=["login"], response_model=Msg)
-async def recover_password(email: str):
+@router.post("/recover-password/{email}",
+             tags=["login"],
+             response_model=Msg,
+             status_code=201)
+async def recover_password(
+        email: str
+):
     """
-    Password Recovery
+    Recover password
     """
     record = await crud.user.get_by_email(email=email)
     if not record:
@@ -130,14 +144,19 @@ async def recover_password(email: str):
     return {"msg": "Password recovery email sent"}
 
 
-@router.post("/reset-password/", tags=["login"], response_model=Msg)
-async def reset_password(token: str = Body(...), new_password: str = Body(...)):
+@router.post("/reset-password/",
+             tags=["login"],
+             response_model=Msg)
+async def reset_password(
+        token: str = Body(...),
+        new_password: str = Body(...)
+):
     """
     Reset password
     """
     email = await verify_password_reset_token(token)
     if not email:
-        raise HTTPException(status_code=400, detail="Invalid token")
+        raise HTTPException(status_code=400, detail="Invalid password reset token")
     record = await crud.user.get_by_email(email=email)
     if not record:
         raise HTTPException(
