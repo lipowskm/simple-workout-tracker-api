@@ -1,3 +1,7 @@
-import databases
+from gino.ext.starlette import Gino
+from sqlalchemy import MetaData
+
 from app.core import config
-database = databases.Database(url=config.DATABASE_URL, ssl='allow')
+from app.main import app
+
+database: MetaData = Gino(app, dsn=config.DATABASE_URL)
