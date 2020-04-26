@@ -28,16 +28,15 @@ def send_email(email_to: str, subject_template="", html_template="", environment
         smtp_options["user"] = config.SMTP_USER
     if config.SMTP_PASSWORD:
         smtp_options["password"] = config.SMTP_PASSWORD
-    response = message.send(to=email_to, render=environment, smtp=smtp_options)
     try:
         response = message.send(to=email_to, render=environment, smtp=smtp_options)
         assert response.status_code == 250
         logging.info(f"Send email result: {response}")
-    except AssertionError:
-        logging.error(f"Failed to send email, send email result: {response}")
-        return False
     except SMTPException as error:
         logging.error(f"Error while trying to send email: {error}")
+        return False
+    except AssertionError:
+        logging.error(f"Failed to send email, send email result: {response}")
         return False
     return response
 

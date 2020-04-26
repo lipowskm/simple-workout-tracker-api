@@ -125,7 +125,7 @@ async def verify_account(
              response_model=Msg,
              status_code=201)
 async def recover_password(
-        email: str
+        email: EmailStr
 ):
     """
     Recover password
