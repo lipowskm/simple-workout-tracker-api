@@ -111,7 +111,7 @@ async def update_user(
                 status_code=HTTP_409_CONFLICT,
                 detail="Username already taken",
             )
-    user_id = await crud.user.update(id=user_id, obj_in=user_in)
+    await crud.user.update(id=user_id, obj_in=user_in)
     return await crud.user.get(id=user_id)
 
 

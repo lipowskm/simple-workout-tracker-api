@@ -29,7 +29,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
                                                      date_created=datetime.utcnow(),
                                                      is_email_verified=obj_in.is_email_verified,
                                                      is_superuser=obj_in.is_superuser,
-                                                     is_active=obj_in.is_active).returning(self.model.id)
+                                                     is_active=obj_in.is_active)
         return await database.execute(query=query)
 
     async def update(self, id: int, obj_in: UserUpdate) -> int:
@@ -39,8 +39,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         elif 'hashed_password' in obj_in_data:
             obj_in_data['hashed_password'] = None
         query = (self.model.__table__.update().where(id == self.model.id).values(
-            {k: v for k, v in obj_in_data.items() if v})).returning(
-            self.model.id)
+            {k: v for k, v in obj_in_data.items() if v}))
         return await database.execute(query=query)
 
     async def authenticate(

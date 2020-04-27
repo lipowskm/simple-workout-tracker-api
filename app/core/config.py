@@ -1,5 +1,5 @@
 import os
-
+from pathlib import Path
 from dotenv import load_dotenv, find_dotenv
 
 
@@ -13,10 +13,13 @@ def get_env_boolean(var_name, default_value=False):
 
 load_dotenv(find_dotenv())
 
+PROJECT_ROOT = Path(__file__).parent.parent.parent
+
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 8
 EMAIL_RESET_TOKEN_EXPIRE_MINUTES = 15
 EMAIL_NEW_ACCOUNT_TOKEN_EXPIRE_MINUTES = 30
 DATABASE_URL = os.getenv("DATABASE_URL")
+TEST_DATABASE_URL = f"sqlite:///{PROJECT_ROOT}\\test.db"
 EMAILS_ENABLED = get_env_boolean("EMAILS_ENABLED", True)
 EMAIL_TEMPLATES_DIR = "./app/email-templates"
 PROJECT_NAME = os.getenv("PROJECT_NAME")
@@ -36,3 +39,4 @@ SMTP_USER = os.getenv("SMTP_USER")
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
 SUPERUSER = os.getenv("SUPERUSER")
 SUPERUSER_PASSWORD = os.getenv("SUPERUSER_PASSWORD")
+TESTING = False

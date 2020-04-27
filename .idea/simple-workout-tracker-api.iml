@@ -11,6 +11,7 @@
     <orderEntry type="module" module-name="simple-workout-tracker-dashboard" />
     <orderEntry type="module" module-name="simple-workout-tracker-dashboard" />
     <orderEntry type="module" module-name="tdd_app" />
+    <orderEntry type="module" module-name="gino_test" />
   </component>
   <component name="TestRunnerService">
     <option name="PROJECT_TEST_RUNNER" value="pytest" />

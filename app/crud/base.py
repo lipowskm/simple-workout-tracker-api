@@ -61,7 +61,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         obj_in_data = jsonable_encoder(obj_in)
         db_obj = self.model(**obj_in_data)
         query = (
-            self.model.__table__.update().where(id == self.model.id).values(**db_obj).returning(self.model.id)
+            self.model.__table__.update().where(id == self.model.id).values(**db_obj)
         )
         return await database.execute(query=query)
 
@@ -71,7 +71,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         :param id: id of object in database.
         :return: id of object in database.
         """
-        query = self.model.__table__.delete().where(id == self.model.id).returning(self.model.id)
+        query = self.model.__table__.delete().where(id == self.model.id)
         return await database.execute(query=query)
 
     async def remove_all(self) -> int:
