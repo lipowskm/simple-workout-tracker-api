@@ -13,6 +13,9 @@
     <orderEntry type="module" module-name="tdd_app" />
     <orderEntry type="module" module-name="gino_test" />
   </component>
+  <component name="PackageRequirementsSettings">
+    <option name="requirementsPath" value="C:\Users\Michal\PycharmProjects\simple-workout-tracker-api\requirements.txt" />
+  </component>
   <component name="TestRunnerService">
     <option name="PROJECT_TEST_RUNNER" value="pytest" />
   </component>

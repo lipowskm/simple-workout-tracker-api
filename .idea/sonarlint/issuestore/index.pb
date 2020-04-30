@@ -63,3 +63,15 @@ W
 'app/email-templates/reset_password.html,a\c\ac3831253ec930e8b428923a74aa03f02493d381
 9
 	README.md,8\e\8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d
+G
+app/tests/utils/user.py,e\9\e94f78d4abbc50495e1a5fa0f7cd81719dc578c2
+E
+app/tests/__init__.py,4\4\447707a821d80cc39e532ce0179db7ddffdf17c9
+?
+app/__init__.py,6\b\6b5a07a517e9a3845a279675e888c81b77b9d712
+G
+app/tests/test_users.py,f\0\f01f563ec023241b40f2e7b35a88a1afb94c11b9
+E
+app/tests/conftest.py,9\f\9f467a9fcd7ffe82aaeae615d9ddff23c4b4f90c
+S
+#app/tests/factories/user_factory.py,7\b\7b4851bdceacd261b908c1981b9e9916b4026b6a
